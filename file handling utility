@@ -1,0 +1,138 @@
+import java.io.*;
+import java.util.Scanner;
+
+public class FileHandlingUtility {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n========= FILE HANDLING UTILITY =========");
+            System.out.println("1. Create File");
+            System.out.println("2. Write to File");
+            System.out.println("3. Read File");
+            System.out.println("4. Append to File");
+            System.out.println("5. Delete File");
+            System.out.println("6. List Files in Directory");
+            System.out.println("7. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // consume newline
+
+            switch (choice) {
+                case 1 -> createFile();
+                case 2 -> writeFile();
+                case 3 -> readFile();
+                case 4 -> appendFile();
+                case 5 -> deleteFile();
+                case 6 -> listFiles();
+                case 7 -> {
+                    System.out.println("Exiting program...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Try again.");
+            }
+        }
+    }
+
+    // 1. Create a file
+    private static void createFile() {
+        System.out.print("Enter file name to create: ");
+        String fileName = scanner.nextLine();
+
+        try {
+            File file = new File(fileName);
+            if (file.createNewFile()) {
+                System.out.println("File created: " + file.getName());
+            } else {
+                System.out.println("File already exists!");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating file: " + e.getMessage());
+        }
+    }
+
+    // 2. Write to a file
+    private static void writeFile() {
+        System.out.print("Enter file name to write: ");
+        String fileName = scanner.nextLine();
+
+        try (FileWriter writer = new FileWriter(fileName)) {
+            System.out.print("Enter text to write: ");
+            String text = scanner.nextLine();
+
+            writer.write(text);
+            System.out.println("Successfully written to file.");
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+    }
+
+    // 3. Read a file
+    private static void readFile() {
+        System.out.print("Enter file name to read: ");
+        String fileName = scanner.nextLine();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            System.out.println("\n---- File Content ----");
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println("----------------------");
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    // 4. Append to a file
+    private static void appendFile() {
+        System.out.print("Enter file name to append: ");
+        String fileName = scanner.nextLine();
+
+        try (FileWriter writer = new FileWriter(fileName, true)) {
+            System.out.print("Enter text to append: ");
+            String text = scanner.nextLine();
+
+            writer.write("\n" + text);
+            System.out.println("Text appended successfully.");
+        } catch (IOException e) {
+            System.out.println("Error appending file: " + e.getMessage());
+        }
+    }
+
+    // 5. Delete a file
+    private static void deleteFile() {
+        System.out.print("Enter file name to delete: ");
+        String fileName = scanner.nextLine();
+
+        File file = new File(fileName);
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File deleted successfully.");
+            } else {
+                System.out.println("Failed to delete file.");
+            }
+        } else {
+            System.out.println("File does not exist!");
+        }
+    }
+
+    // 6. List files in directory
+    private static void listFiles() {
+        System.out.print("Enter directory path: ");
+        String path = scanner.nextLine();
+
+        File directory = new File(path);
+
+        if (directory.exists() && directory.isDirectory()) {
+            System.out.println("\nFiles in directory:");
+            for (String file : directory.list()) {
+                System.out.println(file);
+            }
+        } else {
+            System.out.println("Invalid directory path!");
+        }
+    }
+}
